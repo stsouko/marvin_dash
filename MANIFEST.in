@@ -1,7 +1,7 @@
 include dash_marvinjs/dash_marvinjs.min.js
 include dash_marvinjs/dash_marvinjs.min.js.map
-include metadata.json
-include package-info.json
+include dash_marvinjs/metadata.json
+include dash_marvinjs/package-info.json
 include README.md
 include LICENSE
 include package.json
