@@ -1,41 +1,57 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-/**
- * ExampleComponent is an example component.
- * It takes a property, `label`, and
- * displays it.
- * It renders an input with the property `value`
- * which is editable by the user.
- */
+
 export default class DashMarvinJS extends Component {
     render() {
-        const {id, label, setProps, value} = this.props;
+        const {id, marvin_url, marvin_width, marvin_height, setProps} = this.props;
+        function marvin_button() {
+            const sketcher = this.marvin.sketcherInstance;
+            const button = {
+                'name' : 'Upload',
+                'image-url' : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAArlBMVEUAAAAAAAA' +
+                              'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
+                              'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
+                              'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeyFOlAAAAAXRSTlMAQObYZgAAAAFiS0' +
+                              'dEAIgFHUgAAAAJcEhZcwAACcUAAAnFAYeExPQAAAAHdElNRQfjCQwVADLJ+C5eAAABUklEQVR42u3ZQWrDMBC' +
+                              'F4TlMIFun2JD//hdLodBFLamWrMlL2jc7WWbmi2LkEY44FRsQulj4ClV9vkNdXyMArQC0AtAKQCsArQC0AtAK' +
+                              'QCsArQC0AtAKQCsArQC0AtAKQCsArWBfojpIESz7AvVRhqCQvjGcD9gK2Vvj6YJS7uaFXECtLX8WoH4uSHwIC' +
+                              'olpX1vTj2HFX5u3Eezzlpc7cTP+ua61/zth/V/zcGqAAQZkAY63ea25bbRZ7Ok06zMfzSzXevlLV69bnViGW2' +
+                              'bmAH5Ncxvv/I8AtuFTwyTAgTT3KUfvEwDeFrDOeQjHASEGHN2IkgBrx1Z8GpDxMjLAAAMMMMAAAwwwwAADDDD' +
+                              'AAAMMMODvAaLzO3EmIDSAGLt7IqDvO3EKoCcMMMAAAwwwwAADDDDAgPcCZIcBBrwmIP4RoLJTXNWAUNePuInr' +
+                              'f8b92eUfelqXBAH/Tb4AAAAASUVORK5CYII=',
+                'toolbar' : 'N'
+            };
+            sketcher.addButton(button, async function() {
+                let mrv = await sketcher.exportStructure('mrv');
+                if (mrv !== '<cml><MDocument></MDocument></cml>') {
+                    setProps({structure: mrv});
+                }
+            });
+        }
+        function marvin_ready(e) {
+            const marvin = e.target.contentWindow.marvin;
+            marvin.onReady(marvin_button.bind({marvin: marvin}));
+        }
 
         return (
             <div id={id}>
-                ExampleComponent: {label}&nbsp;
-                <input
-                    value={value}
-                    onChange={
-                        /*
-                         * Send the new value to the parent component.
-                         * setProps is a prop that is automatically supplied
-                         * by dash's front-end ("dash-renderer").
-                         * In a Dash app, this will update the component's
-                         * props and send the data back to the Python Dash
-                         * app server if a callback uses the modified prop as
-                         * Input or State.
-                         */
-                        e => setProps({ value: e.target.value })
-                    }
+                <iframe id='marvinjs_sketch'
+                        src={marvin_url}
+                        width={marvin_width}
+                        height={marvin_height}
+                        data-toolbars='reaction'
+                        onLoad={marvin_ready}
                 />
             </div>
         );
     }
 }
 
-DashMarvinJS.defaultProps = {};
+DashMarvinJS.defaultProps = {
+    marvin_width: 900,
+    marvin_height: 450,
+};
 
 DashMarvinJS.propTypes = {
     /**
@@ -44,14 +60,19 @@ DashMarvinJS.propTypes = {
     id: PropTypes.string,
 
     /**
-     * A label that will be printed when this component is rendered.
+     * A URL of MarvinJS iframe.
      */
-    label: PropTypes.string.isRequired,
+    marvin_url: PropTypes.string.isRequired,
+    /**
+     * Size of MarvinJS iframe.
+     */
+    marvin_width: PropTypes.number,
+    marvin_height: PropTypes.number,
 
     /**
      * The value displayed in the input.
      */
-    value: PropTypes.string,
+    structure: PropTypes.string,
 
     /**
      * Dash-assigned callback that should be called to report property changes

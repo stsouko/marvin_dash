@@ -8,14 +8,14 @@ app = dash.Dash(__name__)
 app.layout = html.Div([
     dash_marvinjs.DashMarvinJS(
         id='input',
-        value='my-value',
-        label='my-label'
+        marvin_url=app.get_asset_url('mjs/editor.html'),
+        marvin_width=600
     ),
     html.Div(id='output')
 ])
 
 
-@app.callback(Output('output', 'children'), [Input('input', 'value')])
+@app.callback(Output('output', 'children'), [Input('input', 'structure')])
 def display_output(value):
     return 'You have entered {}'.format(value)
 
