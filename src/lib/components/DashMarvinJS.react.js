@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 export default class DashMarvinJS extends Component {
     render() {
         const {id, marvin_url, marvin_width, marvin_height, setProps} = this.props;
-        function marvin_button() {
+
+        function marvin_events() {
             const sketcher = this.marvin.sketcherInstance;
             const button = {
                 'name' : 'Upload',
@@ -22,8 +23,8 @@ export default class DashMarvinJS extends Component {
                               'f8b92eUfelqXBAH/Tb4AAAAASUVORK5CYII=',
                 'toolbar' : 'N'
             };
-            sketcher.addButton(button, async function() {
-                let mrv = await sketcher.exportStructure('mrv');
+            sketcher.addButton(button, async () => {
+                const mrv = await sketcher.exportStructure('mrv');
                 if (mrv !== '<cml><MDocument></MDocument></cml>') {
                     setProps({structure: mrv});
                 }
@@ -31,7 +32,7 @@ export default class DashMarvinJS extends Component {
         }
         function marvin_ready(e) {
             const marvin = e.target.contentWindow.marvin;
-            marvin.onReady(marvin_button.bind({marvin: marvin}));
+            marvin.onReady(marvin_events.bind({marvin: marvin}));
         }
 
         return (
