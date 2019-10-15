@@ -4,31 +4,28 @@ import PropTypes from 'prop-types';
 
 export default class DashMarvinJS extends Component {
     componentDidUpdate(prevProps) {
-        if (this.props.upload !== prevProps.upload) {
-            this.render_upload(this.props.upload);
+        if (typeof this.marvin_sketcher !== 'undefined' && this.props.upload !== prevProps.upload) {
+            this.marvin_sketcher.importAsMrv(this.props.upload);
         }
     }
 
-    render_upload(){
-        // ad-hoc
+    async send_download() {
+        const mrv = await this.marvin_sketcher.exportStructure('mrv');
+        if (mrv !== '<cml><MDocument></MDocument></cml>') {
+            this.props.setProps({download: mrv});
+        }
     }
 
     marvin_onready() {
-        const sketcher = this.marvin.sketcherInstance;
-
-        sketcher.addButton(this.component.props.marvin_button, async () => {
-            const mrv = await sketcher.exportStructure('mrv');
-            if (mrv !== '<cml><MDocument></MDocument></cml>') {
-                this.component.props.setProps({download: mrv});
-            }
-        });
-        this.component.render_upload = mrv => {
-            sketcher.importAsMrv(mrv);
-        }
+        const sketcher = this.marvin_window.sketcherInstance;
+        this.marvin_sketcher = sketcher;
+        sketcher.addButton(this.props.marvin_button, this.send_download.bind(this));
     }
+
     marvin_onload(e) {
         const marvin = e.target.contentWindow.marvin;
-        marvin.onReady(this.marvin_onready.bind({marvin: marvin, component: this}));
+        this.marvin_window = marvin;
+        marvin.onReady(this.marvin_onready.bind(this));
     }
 
     render() {
