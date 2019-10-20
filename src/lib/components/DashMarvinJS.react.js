@@ -46,8 +46,8 @@ export default class DashMarvinJS extends Component {
 }
 
 DashMarvinJS.defaultProps = {
-    marvin_width: 900,
-    marvin_height: 450,
+    marvin_width: '900',
+    marvin_height: '450',
     marvin_button: {
         'name' : 'Upload',
         'image-url' : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAArlBMVEUAAAAAAAA' +
@@ -79,11 +79,11 @@ DashMarvinJS.propTypes = {
     /**
      * Width of MarvinJS iframe.
      */
-    marvin_width: PropTypes.number,
+    marvin_width: PropTypes.string,
     /**
      * Height of MarvinJS iframe.
      */
-    marvin_height: PropTypes.number,
+    marvin_height: PropTypes.string,
 
     /**
      * Button config of MarvinJS iframe.

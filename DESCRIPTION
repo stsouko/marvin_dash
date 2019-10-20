@@ -1,6 +1,6 @@
 Package: dashMarvinjs
 Title: MarvinJS to Dash integration
-Version: 0.1.0
+Version: 0.1.1
 Authors @R: as.person(c(Ramil Nugmanov <stsouko@live.ru>))
 Description: MarvinJS to Dash integration
 Depends: R (>= 3.0.2)
