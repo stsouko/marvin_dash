@@ -25,16 +25,11 @@ ChemAxon MJS require manual download. After possible two scenario for setup:
 
 For button customization pass `marvin_button` argument with `{'name' : string, 'image-url' : 'valid html img url', 'toolbar' : 'see MarvinJS documentation (N, W, ...)'}`
 
-Button pressing call callback on python side. Drawn structure available in `download` attribute. Callback can return modified structure back to widget through `upload` attribute.
-Input and output structures encoded in MRV format. `prepare_input` and `prepare_output` decorators help with data conversion to and from `chython` objects.
-
-    @app.callback(Output('set_widget_id_for_callbacks', 'upload'), [Input('set_widget_id_for_callbacks', 'download')])
-    @prepare_input() # pass input idx if structure not first input argument
-    @prepare_output() # pass output idx for multioutput calback
-    def cb(input: Union[chython.MoleculeContainer, chython.ReactionContainer, None]):
-       # magic
-       output: Union[chython.MoleculeContainer, chython.ReactionContainer, Any]
-       return output
+Button pressing call callback on python side.
+Drawn structure and selected atoms and bonds available in `input` attribute.
+Callback can return modified structure back to widget through `output` attribute.
+Input and output structures encoded in MRV format. None is also possible input and output.
+`prepare_input` and `prepare_output` decorators help with data conversion to and from `chython` objects.
 
 See `usage.py` with demo.
 

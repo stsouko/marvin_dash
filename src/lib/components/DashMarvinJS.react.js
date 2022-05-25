@@ -4,16 +4,17 @@ import PropTypes from 'prop-types';
 
 export default class DashMarvinJS extends Component {
     componentDidUpdate(prevProps) {
-        if (typeof this.marvin_sketcher !== 'undefined' && this.props.upload !== prevProps.upload) {
-            this.marvin_sketcher.importAsMrv(this.props.upload);
+        if (typeof this.marvin_sketcher !== 'undefined' &&
+            this.props.output !== null &&
+            this.props.output !== prevProps.output) {
+            this.marvin_sketcher.importAsMrv(this.props.output);
         }
     }
 
     async send_download() {
         const mrv = await this.marvin_sketcher.exportStructure('mrv');
-        if (mrv !== '<cml><MDocument></MDocument></cml>') {
-            this.props.setProps({download: mrv});
-        }
+        const {atoms, bonds} = this.marvin_sketcher.getSelection();
+        this.props.setProps({input: {structure: mrv, atoms: atoms, bonds: bonds}});
     }
 
     marvin_onready() {
@@ -95,13 +96,18 @@ DashMarvinJS.propTypes = {
     }),
 
     /**
-     * Storage for structure from backend
+     * Structure from backend for rendering.
      */
-    upload: PropTypes.string,
+    output: PropTypes.string,
+
     /**
-     * Storage for structure to backend
+     * Structure and selected atoms/bonds.
      */
-    download: PropTypes.string,
+    input: PropTypes.shape({
+        'structure': PropTypes.string,
+        'atoms': PropTypes.string,
+        'bonds': PropTypes.string
+    }),
 
     /**
      * Dash-assigned callback that should be called to report property changes
