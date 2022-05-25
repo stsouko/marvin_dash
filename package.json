@@ -1,6 +1,6 @@
 {
   "name": "dash-marvinjs",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "MarvinJS to Dash integration",
   "main": "build/index.js",
   "scripts": {
@@ -10,8 +10,8 @@
     "build:py": "dash-generate-components ./src/lib/components dash_marvinjs -p package-info.json",
     "build": "npm run build:js && npm run build:py && npm run validate-init"
   },
-  "author": "Ramil Nugmanov <stsouko@live.ru>",
-  "license": "GPL-3.0",
+  "author": "Ramil Nugmanov <nougmanoff@protonmail.com>",
+  "license": "GPLv3",
   "dependencies": {
     "ramda": "^0.26.1"
   },
