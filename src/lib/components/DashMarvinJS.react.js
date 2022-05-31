@@ -18,15 +18,15 @@ export default class DashMarvinJS extends Component {
     }
 
     marvin_onready() {
-        const sketcher = this.marvin_window.sketcherInstance;
-        this.marvin_sketcher = sketcher;
-        sketcher.addButton(this.props.marvin_button, this.send_download.bind(this));
+        const {url, is_dynamic} = this.props.marvin_license;
+        this.marvin_window.Sketch.license(url, is_dynamic);
+        this.marvin_sketcher = this.marvin_window.sketcherInstance;
+        this.marvin_sketcher.addButton(this.props.marvin_button, this.send_download.bind(this));
     }
 
     marvin_onload(e) {
-        const marvin = e.target.contentWindow.marvin;
-        this.marvin_window = marvin;
-        marvin.onReady(this.marvin_onready.bind(this));
+        this.marvin_window = e.target.contentWindow.marvin;
+        this.marvin_window.onReady(this.marvin_onready.bind(this));
     }
 
     render() {
@@ -63,6 +63,10 @@ DashMarvinJS.defaultProps = {
                       'AAAMMMODvAaLzO3EmIDSAGLt7IqDvO3EKoCcMMMAAAwwwwAADDDDAgPcCZIcBBrwmIP4RoLJTXNWAUNePuInr' +
                       'f8b92eUfelqXBAH/Tb4AAAAASUVORK5CYII=',
         'toolbar' : 'N'
+    },
+    marvin_license: {
+        'url': '/license.cxl',
+        'is_dynamic': false
     }
 };
 
@@ -93,6 +97,14 @@ DashMarvinJS.propTypes = {
         'name' : PropTypes.string,
         'image-url' : PropTypes.string,
         'toolbar' : PropTypes.string
+    }),
+
+    /**
+     * License location
+     */
+    marvin_license: PropTypes.shape({
+        'url': PropTypes.string,
+        'is_dynamic': PropTypes.bool
     }),
 
     /**
