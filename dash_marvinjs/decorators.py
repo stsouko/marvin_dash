@@ -29,7 +29,7 @@ def prepare_input(idx: int = 0):
                 else:
                     sb = ()
 
-                with BytesIO(args[idx]['structure'].encode()) as f, MRVRead(f) as i:
+                with BytesIO(args[idx]['structure'].encode()) as f, MRVRead(f, ignore=True) as i:
                     try:
                         args[idx] = Input(next(i), sa, sb)
                     except StopIteration:
