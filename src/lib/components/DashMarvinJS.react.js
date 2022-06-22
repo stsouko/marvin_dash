@@ -22,6 +22,10 @@ export default class DashMarvinJS extends Component {
         this.marvin_window.Sketch.license(url, is_dynamic);
         this.marvin_sketcher = this.marvin_window.sketcherInstance;
         this.marvin_sketcher.addButton(this.props.marvin_button, this.send_download.bind(this));
+
+        if (this.props.output !== null) {
+            this.marvin_sketcher.importAsMrv(this.props.output);
+        }
     }
 
     marvin_onload(e) {

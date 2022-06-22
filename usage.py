@@ -1,4 +1,4 @@
-from chython import MoleculeContainer, ReactionContainer
+from chython import MoleculeContainer, ReactionContainer, smiles
 from dash import Dash, html
 from dash.dependencies import Input, Output
 from dash_marvinjs import DashMarvinJS, prepare_input, prepare_output
@@ -33,6 +33,10 @@ def display_output(inp: Optional[Tuple[Union[MoleculeContainer, ReactionContaine
         print([s.bond(x, y) for x, y in inp.bonds])
         if 'Se' in s:  # erase fragrant molecule!
             return MoleculeContainer()
+        return s
+    else:
+        s = smiles('CC(I)C')
+        s.clean2d()
         return s
 
 
