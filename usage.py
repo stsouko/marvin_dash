@@ -12,6 +12,7 @@ app.layout = html.Div([
         id='mjs',
         marvin_url=app.get_asset_url('mjs/editor.html'),  # URL of marvin distributive.
         # Note to correctly setup cross-domain headers on server!
+        marvin_license={'url': app.get_asset_url('license.cxl'), 'is_dynamic': False},
         marvin_width='600px',
         marvin_height='600px'
     )

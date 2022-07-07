@@ -1,4 +1,4 @@
-from chython import MRVRead, MRVWrite
+from chython import MRVRead, MRVWrite, ReactionContainer
 from collections import namedtuple
 from functools import wraps
 from io import BytesIO, StringIO
@@ -10,30 +10,38 @@ Input = namedtuple('Input', ('structure', 'atoms', 'bonds'))
 
 def prepare_input(idx: int = 0):
     """
-    Decorate callback input. Converts MRV string into chython structures. None input propagated as is.
+    Decorate callback input. Converts MRV string into chython structures and process selected atoms and bonds.
+    None input propagated as is.
 
-    :param idx: index of the MRV input.
+    Output format:
+
+    (MoleculeContainer, [selected atoms numbers], [(bonds atoms numbers, pairs)])
+     or
+    (ReactionContainer, [(molecule index, selected atom number)], [(molecule index, bonds atoms numbers, pairs)])
+
+    :param idx: index of the MJS input in Dash callback.
     """
     def d(fn):
         @wraps(fn)
         def w(*args):
-            if args[idx] is not None:
+            if (ai := args[idx]) is not None:
+                sa = [int(x) for x in ai['atoms'].split(',')] if ai['atoms'] else []
+                sb = [[int(x) for x in x.split('-')] for x in ai['bonds'].split(',')] if ai['bonds'] else []
+
                 args = list(args)
-
-                if args[idx]['atoms']:
-                    sa = tuple(int(x) for x in args[idx]['atoms'].split(','))
-                else:
-                    sa = ()
-                if args[idx]['bonds']:
-                    sb = tuple(tuple(int(x) for x in x.split('-')) for x in args[idx]['bonds'].split(','))
-                else:
-                    sb = ()
-
-                with BytesIO(args[idx]['structure'].encode()) as f, MRVRead(f, ignore=True) as i:
+                with BytesIO(ai['structure'].encode()) as f, MRVRead(f, ignore=True) as i:
                     try:
-                        args[idx] = Input(next(i), sa, sb)
+                        s = next(i)
                     except StopIteration:
                         args[idx] = None
+                    else:
+                        if isinstance(s, ReactionContainer):
+                            mp = dict(enumerate(((y, x) for y, x in enumerate(s.molecules()) for x in x), start=1))
+                            sb = [(*mp[x], mp[y][1]) for x, y in sb]
+                        else:  # molecule
+                            mp = dict(enumerate(s, start=1))
+                            sb = [(mp[x], mp[y]) for x, y in sb]
+                        args[idx] = Input(s, [mp[x] for x in sa], sb)
             return fn(*args)
         return w
     return d
