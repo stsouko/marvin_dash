@@ -1,7 +1,7 @@
 from chython import MoleculeContainer, ReactionContainer, smiles
 from dash import Dash, html
 from dash.dependencies import Input, Output
-from dash_marvinjs import DashMarvinJS, prepare_input, prepare_output
+from dash_marvinjs import DashMarvinJS, prepare_input, prepare_output, Input as MJSInput
 from typing import Tuple, Optional, Union
 
 
@@ -22,21 +22,20 @@ app.layout = html.Div([
 @app.callback(Output('mjs', 'output'), [Input('mjs', 'input')])
 @prepare_input()
 @prepare_output()
-def display_output(inp: Optional[Tuple[Union[MoleculeContainer, ReactionContainer],
-                                       Tuple[int, ...],
-                                       Tuple[Tuple[int, int], ...]]]) -> Union[MoleculeContainer,
-                                                                               ReactionContainer, None]:
+def display_output(inp: Optional[MJSInput]) -> Union[MJSInput, MoleculeContainer, ReactionContainer, None]:
     if inp:
-        s = inp.structure
-        s.canonicalize()
+        if not isinstance((s := inp.structure), MoleculeContainer):
+            # clean canvas
+            return MJSInput(None)
 
-        print([s.atom(x) for x in inp.atoms])
-        print([s.bond(x, y) for x, y in inp.bonds])
-        if 'Se' in s:  # erase fragrant molecule!
-            return MoleculeContainer()
-        return s
-    else:
-        s = smiles('CC(I)C')
+        s.canonicalize()
+        if len(inp.atoms) == 2 and len(inp.bonds) == 1:
+            if s.atom(inp.atoms[0]).atomic_symbol == 'C' and s.atom(inp.atoms[1]).atomic_symbol == 'C':
+                if s.bond(*inp.bonds[0]).order == 2:
+                    return inp  # return structure and selection
+        return s  # return structure only. no/clean selection
+    else:  # page loaded. render example structure
+        s = smiles('C=C(I)C')
         s.clean2d()
         return s
 

@@ -14,6 +14,7 @@ Add widget to your dash app layout.
         dash_marvinjs.DashMarvinJS(
            id='set_widget_id_for_callbacks',
            marvin_url=app.get_asset_url('mjs/editor.html'),
+           marvin_license={'url': app.get_asset_url('license.cxl'), 'is_dynamic': False},
            marvin_width='600px',
            marvin_height='600px'
         )
@@ -27,7 +28,7 @@ For button customization pass `marvin_button` argument with `{'name' : string, '
 
 Button pressing call callback on python side.
 Drawn structure and selected atoms and bonds available in `input` attribute.
-Callback can return modified structure back to widget through `output` attribute.
+Callback can return modified structure and selection back to widget through `output` attribute.
 Input and output structures encoded in MRV format. None is also possible input and output.
 `prepare_input` and `prepare_output` decorators help with data conversion to and from `chython` objects.
 

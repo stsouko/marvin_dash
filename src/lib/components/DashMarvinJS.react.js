@@ -4,11 +4,61 @@ import PropTypes from 'prop-types';
 
 export default class DashMarvinJS extends Component {
     componentDidUpdate(prevProps) {
-        if (typeof this.marvin_sketcher !== 'undefined' &&
-            this.props.output !== null &&
-            this.props.output !== prevProps.output) {
-            this.marvin_sketcher.importAsMrv(this.props.output);
+        // ignore empty data from backend
+        if (typeof this.marvin_sketcher !== 'undefined' && typeof this.props.output !== 'undefined' && this.props.output !== null) {
+            const structure = this.validate_structure(this.props.output);
+            // clear canvas on null-structure
+            if (structure === null) {
+                if (!this.marvin_sketcher.isEmpty()) {
+                    this.marvin_sketcher.clear();
+                }
+            }
+            // first time or strange backend behaviour
+            else if (typeof prevProps.output === 'undefined' || prevProps.output === null) {
+                this.marvin_sketcher.importAsMrv(this.props.output.structure);
+                this.marvin_sketcher.setSelection(this.validate_selection(this.props.output));
+            }
+            // check the difference to prevent useless rerender
+            else {
+                // structure changed
+                if (structure !== this.validate_structure(prevProps.output)) {
+                    this.marvin_sketcher.importAsMrv(this.props.output.structure);
+                    this.marvin_sketcher.setSelection(this.validate_selection(this.props.output));
+                }
+                // structure not changed. check selection
+                else {
+                    // update selection
+                    const selection = this.validate_selection(this.props.output);
+                    if (selection !== this.validate_selection(prevProps.output)) {
+                        this.marvin_sketcher.setSelection(selection);
+                    }
+                }
+            }
         }
+    }
+
+    validate_structure(output) {
+        if (typeof output.structure === 'undefined') {
+            return null
+        }
+        return output.structure
+    }
+
+    validate_selection(output) {
+        let atoms, bonds;
+        if (typeof output.atoms !== 'undefined' && output.atoms !== null) {
+            atoms = output.atoms;
+        }
+        else {
+            atoms = '';
+        }
+        if (typeof output.bonds !== 'undefined' && output.bonds !== null) {
+            bonds = output.bonds;
+        }
+        else {
+            bonds = '';
+        }
+        return {atoms: atoms, bonds: bonds}
     }
 
     async send_download() {
@@ -23,8 +73,13 @@ export default class DashMarvinJS extends Component {
         this.marvin_sketcher = this.marvin_window.sketcherInstance;
         this.marvin_sketcher.addButton(this.props.marvin_button, this.send_download.bind(this));
 
-        if (this.props.output !== null) {
-            this.marvin_sketcher.importAsMrv(this.props.output);
+        // default render
+        if (typeof this.props.output !== 'undefined' && this.props.output !== null) {
+            const structure = this.validate_structure(this.props.output);
+            if (structure !== null) {
+                this.marvin_sketcher.importAsMrv(structure);
+                this.marvin_sketcher.setSelection(this.validate_selection(this.props.output));
+            }
         }
     }
 
@@ -114,7 +169,11 @@ DashMarvinJS.propTypes = {
     /**
      * Structure from backend for rendering.
      */
-    output: PropTypes.string,
+    output: PropTypes.shape({
+        'structure': PropTypes.string,
+        'atoms': PropTypes.string,
+        'bonds': PropTypes.string
+    }),
 
     /**
      * Structure and selected atoms/bonds.
