@@ -72,6 +72,7 @@ export default class DashMarvinJS extends Component {
         this.marvin_window.Sketch.license(url, is_dynamic);
         this.marvin_sketcher = this.marvin_window.sketcherInstance;
         this.marvin_sketcher.addButton(this.props.marvin_button, this.send_download.bind(this));
+        this.marvin_sketcher.setServices(this.props.marvin_services);
 
         // default render
         if (typeof this.props.output !== 'undefined' && this.props.output !== null) {
@@ -123,6 +124,9 @@ DashMarvinJS.defaultProps = {
                       'f8b92eUfelqXBAH/Tb4AAAAASUVORK5CYII=',
         'toolbar' : 'N'
     },
+    marvin_services: {
+        'molconvertws': '/importer'
+    },
     marvin_license: {
         'url': '/license.cxl',
         'is_dynamic': false
@@ -157,6 +161,13 @@ DashMarvinJS.propTypes = {
         'image-url' : PropTypes.string,
         'toolbar' : PropTypes.string
     }),
+
+    /**
+     * Structure import backend.
+     */
+    marvin_services: PropTypes.shape({
+        'molconvertws' : PropTypes.string
+	}),
 
     /**
      * License location

@@ -51,11 +51,12 @@ def prepare_input(idx: int = 0):
     return d
 
 
-def prepare_output(idx: Optional[int] = None):
+def prepare_output(idx: Optional[int] = None, skip_mapping: bool = True):
     """
     Decorate callback output. Converts chython structures into MRV string. Use None for canvas cleaning.
 
     :param idx: index of the chython object in the output tuple for multiple outputs or None for single output.
+    :param skip_mapping: remove atom numbers.
     """
     def d(fn):
         @wraps(fn)
@@ -92,7 +93,7 @@ def prepare_output(idx: Optional[int] = None):
                     raise TypeError('dash_marvinjs.Input or MoleculeContainer or ReactionContainer expected')
                 with StringIO() as f:
                     with MRVWrite(f) as o:
-                        o.write(s.structure)
+                        o.write(s.structure, skip_mapping=skip_mapping)
                     s = {'structure': f.getvalue(), 'atoms': s.atoms, 'bonds': s.bonds}
             if idx is None:
                 return s

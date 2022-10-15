@@ -16,13 +16,16 @@ Add widget to your dash app layout.
            marvin_url=app.get_asset_url('mjs/editor.html'),
            marvin_license={'url': app.get_asset_url('license.cxl'), 'is_dynamic': False},
            marvin_width='600px',
-           marvin_height='600px'
+           marvin_height='600px',
+           marvin_services={'molconvertws': '/importer'}
         )
     ])
 
 ChemAxon MJS require manual download. After possible two scenario for setup:
 * Custom host:port/url/to/mjs/editor.html. For example by using nginx static files hosting . Note to correctly setup cross-domain headers on server!
 * Serve mjs distributive by dash app itself. Place mjs distributive into `assets` folder near to `entry_point.py` and pass `marvin_url=app.get_asset_url('mjs_distro/editor.html')`. See details of assets directory customization in Dash and Flask documentation.
+
+For importing of smiles sdf and rdf, setup `dash_marvinjs.importer(app, '/importer')`. 
 
 For button customization pass `marvin_button` argument with `{'name' : string, 'image-url' : 'valid html img url', 'toolbar' : 'see MarvinJS documentation (N, W, ...)'}`
 
