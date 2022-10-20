@@ -48,6 +48,10 @@ def prepare_input(idx: int = 0):
                         args[idx] = Input(s, [mp[x] for x in sa], sb)
             return fn(*args)
         return w
+
+    if callable(idx):  # decorated function
+        f, idx = idx, 0
+        return d(f)
     return d
 
 
@@ -101,6 +105,10 @@ def prepare_output(idx: Optional[int] = None, skip_mapping: bool = True):
             out[idx] = s
             return tuple(out)
         return w
+
+    if callable(idx):  # decorated function
+        f, idx = idx, None
+        return d(f)
     return d
 
 

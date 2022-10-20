@@ -23,8 +23,8 @@ importer(app, '/importer', True)  # setup importer route and mapping display
 
 
 @app.callback(Output('mjs', 'output'), [Input('mjs', 'input')])
-@prepare_input()
-@prepare_output(skip_mapping=True)
+@prepare_input  # or prepare_input(idx=0)
+@prepare_output  # or prepare_output(idx=None, skip_mapping=True)
 def callback(inp: Optional[MJSInput]) -> Union[MJSInput, MoleculeContainer, ReactionContainer, None]:
     if inp:
         if not isinstance((s := inp.structure), MoleculeContainer):

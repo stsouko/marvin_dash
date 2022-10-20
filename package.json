@@ -1,6 +1,6 @@
 {
   "name": "dash-marvinjs",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "MarvinJS to Dash integration",
   "main": "build/index.js",
   "scripts": {
