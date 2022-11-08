@@ -15,7 +15,9 @@ app.layout = html.Div([
         marvin_license={'url': app.get_asset_url('license.cxl'), 'is_dynamic': False},
         marvin_width='600px',
         marvin_height='600px',
-        marvin_services={'molconvertws': '/importer'}  # default
+        marvin_services={'molconvertws': '/importer'},  # default
+        # marvin_templateurl=app.get_asset_url('templates.mrv'),
+        # marvin_abbrevsurl=app.get_asset_url('abbrs.sdf')
     )
 ])
 

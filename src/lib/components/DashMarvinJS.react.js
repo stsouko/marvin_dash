@@ -90,7 +90,7 @@ export default class DashMarvinJS extends Component {
     }
 
     render() {
-        const {id, marvin_url, marvin_width, marvin_height} = this.props;
+        const {id, marvin_url, marvin_width, marvin_height, marvin_templateurl, marvin_abbrevsurl} = this.props;
 
         return (
             <div id={id}>
@@ -99,6 +99,8 @@ export default class DashMarvinJS extends Component {
                         width={marvin_width}
                         height={marvin_height}
                         data-toolbars='reaction'
+                        data-templateurl={marvin_templateurl}
+                        data-abbrevsurl={marvin_abbrevsurl}
                         onLoad={this.marvin_onload.bind(this)}
                 />
             </div>
@@ -130,7 +132,9 @@ DashMarvinJS.defaultProps = {
     marvin_license: {
         'url': '/license.cxl',
         'is_dynamic': false
-    }
+    },
+    marvin_templateurl: null,
+    marvin_abbrevsurl: null
 };
 
 DashMarvinJS.propTypes = {
@@ -177,6 +181,15 @@ DashMarvinJS.propTypes = {
         'is_dynamic': PropTypes.bool
     }),
 
+    /**
+     * Custom templates
+     */
+    marvin_templateurl: PropTypes.string,
+
+    /**
+     * Custom groups abbreviations
+     */
+    marvin_abbrevsurl: PropTypes.string,
     /**
      * Structure from backend for rendering.
      */
