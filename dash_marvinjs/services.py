@@ -1,6 +1,5 @@
-from chython import MRVWrite, smiles, SDFRead, RDFRead, SMILESRead
+from chython import MRVWrite, smiles, mdl_mol, mdl_rxn
 from io import StringIO
-from itertools import chain
 from flask import request
 
 
@@ -15,13 +14,17 @@ def importer(app, route='/importer', skip_mapping=True):
     @app.server.route(route, methods=['POST'])
     def callback():
         data = request.json['structure']
-        for r in (SMILESRead, RDFRead, SDFRead):
-            for s in r(StringIO(data)):
-                s.clean2d()
-                with StringIO() as f:
-                    with MRVWrite(f) as o:
-                        o.write(s, skip_mapping=skip_mapping)
-                    return {'structure': f.getvalue()}
+        for r in (smiles, mdl_mol, mdl_rxn):
+            try:
+                s = r(data)
+            except ValueError:
+                continue
+
+            s.clean2d()
+            with StringIO() as f:
+                with MRVWrite(f, mapping=not skip_mapping) as o:
+                    o.write(s)
+                return {'structure': f.getvalue()}
         return {'structure': None}
 
 

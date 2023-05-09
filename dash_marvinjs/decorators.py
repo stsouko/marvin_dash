@@ -96,8 +96,8 @@ def prepare_output(idx: Optional[int] = None, skip_mapping: bool = True):
                 else:
                     raise TypeError('dash_marvinjs.Input or MoleculeContainer or ReactionContainer expected')
                 with StringIO() as f:
-                    with MRVWrite(f) as o:
-                        o.write(s.structure, skip_mapping=skip_mapping)
+                    with MRVWrite(f, mapping=not skip_mapping) as o:
+                        o.write(s.structure)
                     s = {'structure': f.getvalue(), 'atoms': s.atoms, 'bonds': s.bonds}
             if idx is None:
                 return s
