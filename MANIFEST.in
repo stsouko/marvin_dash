@@ -1,5 +1,9 @@
 include dash_marvinjs/dash_marvinjs.min.js
 include dash_marvinjs/dash_marvinjs.min.js.map
+include dash_marvinjs/async-*.js
+include dash_marvinjs/async-*.js.map
+include dash_marvinjs/*-shared.js
+include dash_marvinjs/*-shared.js.map
 include dash_marvinjs/metadata.json
 include dash_marvinjs/package-info.json
 include README.md

@@ -1,7 +1,6 @@
 from chython import MoleculeContainer, ReactionContainer, smiles
-from dash import Dash, html
-from dash.dependencies import Input, Output
-from dash_marvinjs import DashMarvinJS, prepare_input, prepare_output, Input as MJSInput, importer
+from dash import Dash, html, Input, Output
+from dash_marvinjs import DashMarvinJS, prepare_input, prepare_output, MarvinState, importer
 from typing import Optional, Union
 
 
@@ -16,8 +15,8 @@ app.layout = html.Div([
         marvin_width='600px',
         marvin_height='600px',
         marvin_services={'molconvertws': '/importer'},  # default
-        # marvin_templateurl=app.get_asset_url('templates.mrv'),
-        # marvin_abbrevsurl=app.get_asset_url('abbrs.sdf')
+        # marvin_button={'name' : 'Synchronize', 'image-url' : app.get_asset_url('ready.png'), 'toolbar' : 'N'}
+        # marvin_templateurl=app.get_asset_url('templates.mrv')
     )
 ])
 
@@ -27,11 +26,11 @@ importer(app, '/importer', True)  # setup importer route and mapping display
 @app.callback(Output('mjs', 'output'), [Input('mjs', 'input')])
 @prepare_input  # or prepare_input(idx=0)
 @prepare_output  # or prepare_output(idx=None, skip_mapping=True)
-def callback(inp: Optional[MJSInput]) -> Union[MJSInput, MoleculeContainer, ReactionContainer, None]:
+def callback(inp: Optional[MarvinState]) -> Union[MarvinState, MoleculeContainer, ReactionContainer, None]:
     if inp:
         if not isinstance((s := inp.structure), MoleculeContainer):
             # clean canvas example
-            return MJSInput(None)
+            return MarvinState(None)
 
         s.canonicalize()
         if len(inp.atoms) == 2 and len(inp.bonds) == 1:

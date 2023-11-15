@@ -133,8 +133,7 @@ DashMarvinJS.defaultProps = {
         'url': '/license.cxl',
         'is_dynamic': false
     },
-    marvin_templateurl: null,
-    marvin_abbrevsurl: null
+    marvin_templateurl: null
 };
 
 DashMarvinJS.propTypes = {
@@ -186,10 +185,6 @@ DashMarvinJS.propTypes = {
      */
     marvin_templateurl: PropTypes.string,
 
-    /**
-     * Custom groups abbreviations
-     */
-    marvin_abbrevsurl: PropTypes.string,
     /**
      * Structure from backend for rendering.
      */

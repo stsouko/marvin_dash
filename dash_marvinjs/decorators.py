@@ -6,7 +6,7 @@ from typing import Optional, Union, List, Tuple
 
 
 @dataclass
-class Input:
+class MarvinState:
     structure: Union[MoleculeContainer, ReactionContainer, None]
     atoms: Union[List[int], List[Tuple[int, int]], None] = None
     bonds: Union[List[Tuple[int, int]], List[Tuple[int, int, int]], None] = None
@@ -45,7 +45,7 @@ def prepare_input(idx: int = 0):
                         else:  # molecule
                             mp = dict(enumerate(s, 1))
                             sb = [(mp[x], mp[y]) for x, y in sb]
-                        args[idx] = Input(s, [mp[x] for x in sa], sb)
+                        args[idx] = MarvinState(s, [mp[x] for x in sa], sb)
             return fn(*args)
         return w
 
@@ -69,8 +69,8 @@ def prepare_output(idx: Optional[int] = None, skip_mapping: bool = True):
             s = out if idx is None else out[idx]
             if s is not None:
                 if isinstance(s, (MoleculeContainer, ReactionContainer)):
-                    s = Input(s)
-                elif isinstance(s, Input):
+                    s = MarvinState(s)
+                elif isinstance(s, MarvinState):
                     if s.structure is None:
                         s = {'structure': None}
                         if idx is None:
@@ -92,7 +92,7 @@ def prepare_output(idx: Optional[int] = None, skip_mapping: bool = True):
 
                     if (atoms := s.atoms) is not None:
                         atoms = ','.join(str(mp[x]) for x in atoms)
-                    s = Input(s.structure, atoms, bonds)
+                    s = MarvinState(s.structure, atoms, bonds)
                 else:
                     raise TypeError('dash_marvinjs.Input or MoleculeContainer or ReactionContainer expected')
                 with StringIO() as f:
@@ -112,4 +112,4 @@ def prepare_output(idx: Optional[int] = None, skip_mapping: bool = True):
     return d
 
 
-__all__ = ['prepare_input', 'prepare_output', 'Input']
+__all__ = ['prepare_input', 'prepare_output', 'MarvinState']

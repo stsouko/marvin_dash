@@ -1,4 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
+### Webpack
+.build_cache
 ### VisualStudioCode template
 .vscode/*
 !.vscode/settings.json
@@ -272,3 +274,7 @@ bh_unicode_properties.cache
 # Sublime-github package stores a github token in this file
 # https://packagecontrol.io/packages/sublime-github
 GitHub.sublime-settings
+
+# Julia manifest file names
+Manifest.toml
+JuliaManifest.toml
